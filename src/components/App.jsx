@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Clock from 'react-clock';
 import 'react-clock/dist/Clock.css';
 import { API } from '../api/api';
@@ -95,7 +95,7 @@ export const App = () => {
     });
   };
 
-  const fetchImages = async () => {
+  const fetchImages = useCallback(async () => {
     setCurrentStatus(status.pending);
     if (searchValue === '') {
       setCurrentStatus(status.idle);
@@ -129,11 +129,11 @@ export const App = () => {
       setCurrentStatus(status.rejected);
       setError(error.message);
     }
-  };
+  }, [page, searchValue]);
 
   useEffect(() => {
     fetchImages();
-  }, [page, searchValue]);
+  }, [fetchImages]);
 
   useEffect(() => {
     const interval = setInterval(() => setWatch(new Date()), 1000);
