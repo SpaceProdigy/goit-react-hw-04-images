@@ -1,48 +1,50 @@
-import React, { Component } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import css from './Modal.module.css';
 
 const modalRoot = document.getElementById('modal-root');
 
-export class Modal extends Component {
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    largeImg: PropTypes.shape({
-      largeImageURL: PropTypes.string.isRequired,
-      tags: PropTypes.string.isRequired,
-    }).isRequired,
-  };
+export const Modal = ({ largeImg, onClose }) => {
+  const { largeImageURL, tags } = largeImg;
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.handleEscapeKey);
-  }
+  const handleEscapeKey = useCallback(
+    e => {
+      if (e.keyCode === 27) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
-  componentWillUnmount() {
-    document.removeEventListener('keydown', this.handleEscapeKey);
-  }
-
-  handleEscapeKey = e => {
-    if (e.keyCode === 27) {
-      this.props.onClose();
-    }
-  };
-
-  hendleCloseModal = e => {
+  const hendleCloseModal = e => {
     if (e.currentTarget === e.target) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { largeImageURL, tags } = this.props.largeImg;
-    return createPortal(
-      <div className={css.Overlay} onClick={this.hendleCloseModal}>
-        <div className={css.Modal}>
-          <img src={largeImageURL} alt={tags} />
-        </div>
-      </div>,
-      modalRoot
-    );
-  }
-}
+  useEffect(() => {
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, []);
+
+  return createPortal(
+    <div className={css.Overlay} onClick={hendleCloseModal}>
+      <div className={css.Modal}>
+        <img src={largeImageURL} alt={tags} />
+      </div>
+    </div>,
+    modalRoot
+  );
+};
+
+Modal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  largeImg: PropTypes.shape({
+    largeImageURL: PropTypes.string.isRequired,
+    tags: PropTypes.string.isRequired,
+  }).isRequired,
+};

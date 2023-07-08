@@ -54,7 +54,7 @@ export const App = () => {
   const [page, setPage] = useState(1);
   const [error, setError] = useState('');
   const [loadMore, setLoadMore] = useState(false);
-  const [watch, setWatch] = useState(new Date());
+  const [value, setValue] = useState(new Date());
 
   const handleSearchValue = value => {
     setSearchValue(value);
@@ -136,7 +136,7 @@ export const App = () => {
   }, [fetchImages]);
 
   useEffect(() => {
-    const interval = setInterval(() => setWatch(new Date()), 1000);
+    const interval = setInterval(() => setValue(new Date()), 1000);
 
     return () => {
       clearInterval(interval);
@@ -148,7 +148,7 @@ export const App = () => {
       <Searchbar value={handleSearchValue} />
       {currentStatus === status.idle && (
         <div className={css.Img}>
-          <Clock value={watch} className={css.Clock} {...customOptions} />
+          <Clock value={value} className={css.Clock} {...customOptions} />
           <h1 className={css.Title}>
             Here you will find everything <br /> you were looking for
           </h1>
