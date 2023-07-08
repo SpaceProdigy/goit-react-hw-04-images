@@ -29,7 +29,7 @@ export const Modal = ({ largeImg, onClose }) => {
     return () => {
       document.removeEventListener('keydown', handleEscapeKey);
     };
-  }, []);
+  }, [handleEscapeKey]);
 
   return createPortal(
     <div className={css.Overlay} onClick={hendleCloseModal}>
